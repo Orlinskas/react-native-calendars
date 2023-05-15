@@ -2,7 +2,7 @@ import findIndex from 'lodash/findIndex';
 import PropTypes from 'prop-types';
 import XDate from 'xdate';
 
-import React, {forwardRef, useImperativeHandle, useRef, useEffect, useState, useCallback, useMemo} from 'react';
+import React, {forwardRef, useImperativeHandle, useRef, useEffect, useState, useCallback, useMemo, FC} from 'react';
 import {FlatList, View, ViewStyle, FlatListProps} from 'react-native';
 
 import {extractHeaderProps, extractCalendarProps} from '../componentUpdater';
@@ -22,6 +22,7 @@ const PAST_SCROLL_RANGE = 50;
 const FUTURE_SCROLL_RANGE = 50;
 
 export interface CalendarListProps extends CalendarProps, Omit<FlatListProps<any>, 'data' | 'renderItem'> {
+  List?: FC<FlatListProps<any>>;
   /** Max amount of months allowed to scroll to the past. Default = 50 */
   pastScrollRange?: number;
   /** Max amount of months allowed to scroll to the future. Default = 50 */
@@ -281,9 +282,10 @@ const CalendarList = (props: CalendarListProps & ContextProp, ref: any) => {
     },
   ]);
 
+  const List = props.List ?? FlatList;
   return (
     <View style={style.current.flatListContainer} testID={testID}>
-      <FlatList
+      <List
         // @ts-expect-error
         ref={list}
         style={listStyle}
